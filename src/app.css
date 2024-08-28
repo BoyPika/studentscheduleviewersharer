@@ -39,6 +39,9 @@ body {
   right:0;
   text-align: center;
 }
+.discordicon {
+  padding-right: 1em;
+}
 h1 {
   font-size: 3.2em;
   line-height: 1.1;

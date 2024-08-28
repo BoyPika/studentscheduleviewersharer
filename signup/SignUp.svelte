@@ -1,6 +1,6 @@
 <script lang="ts">
     import PocketBase from 'pocketbase';
-    import { Label, Input, InputAddon, ButtonGroup, Card, Checkbox, Button } from 'flowbite-svelte';
+    import { Label, Input, InputAddon, ButtonGroup, Card, Img, Button } from 'flowbite-svelte';
     import { UserCircleSolid, LockSolid, EnvelopeSolid } from 'flowbite-svelte-icons';
     const pb = new PocketBase('http://127.0.0.1:8090/');
     import Header from '../src/Header.svelte';
@@ -12,9 +12,26 @@
             "password": (document.getElementById('password') as HTMLInputElement).value,
             "passwordConfirm": (document.getElementById('password') as HTMLInputElement).value
         }
-        await pb.collection('users').create(data).catch((error) => {
-            console.error(error);
-        });
+
+        //CW for those sensitive to stupid if statements
+        if (data.password.length >= 8 && data.password.length <= 72){
+            if (data.username.length >= 3 && data.username.length <= 150) {
+                await pb.collection('users').create(data).catch((error) => {
+                    console.error(error);
+                }).then(() => {
+                    window.location.assign("/");
+                });
+            } else {
+                alert("Username must be at least 3 characters long and less than 150 characters long")
+            }
+        } else {
+            alert("Password must be at least 100 characters long and less than 72 characters long")
+        }
+
+    }
+    async function discord(){
+        await pb.collection('users').authWithOAuth2({ provider: 'discord' });
+        window.location.assign("/");
     }
 </script>
 <Header/>
@@ -47,11 +64,11 @@
                     </InputAddon>
                     <Input type="password" id="password" placeholder="•••••••"/>
                 </ButtonGroup>
-            </div>
-            <div class="flex items-start">
-                <a href="/forgotpassword/" class="ms-auto text-sm text-primary-500 hover:underline dark:text-primary-300 hover:text-primary-50"> Forgot password? </a>
             </div><br>
-            <button type="submit" class="text-center font-medium focus-within:ring-4 focus-within:outline-none inline-flex items-center justify-center px-5 py-2.5 text-sm text-white bg-primary-700 hover:bg-primary-800 dark:bg-primary-600 dark:hover:bg-primary-700 focus-within:ring-primary-300 dark:focus-within:ring-primary-800 rounded-lg w-full">Login to your account</button>
+            <Button class="w-full" type="submit">Sign Up</Button>
+            <div class="space-y-2 pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
+                <Button class="w-full" on:click={discord}><Img src="https://cdn.prod.website-files.com/6257adef93867e50d84d30e2/653714c1f22aef3b6921d63d_636e0a6ca814282eca7172c6_icon_clyde_white_RGB.svg" width="48"  alt="Discord Logo" class="discordicon"/>Sign Up With Discord</Button>
+            </div>
         </form>
     </Card>
 </main>
