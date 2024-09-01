@@ -15,7 +15,8 @@
     <NavHamburger  />
     {#if pb.authStore.isValid}
         <NavUl >
-            <NavLi href="/settings/">Profile</NavLi>
+            <NavLi href="/profile/">Profile</NavLi>
+            <NavLi href="/settings/">Settings</NavLi>
             <NavLi href="/login/" on:click={logout}>Log Out</NavLi>
         </NavUl>
         {:else}
